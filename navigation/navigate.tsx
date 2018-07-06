@@ -1,7 +1,7 @@
 import React from 'react';
 import { StackNavigator, } from 'react-navigation';
 import { Button } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 import login from '../screens/login';
 import contacts from '../screens/contacts';
