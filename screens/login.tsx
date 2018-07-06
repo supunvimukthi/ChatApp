@@ -1,36 +1,94 @@
 import React from 'react';
-import { StyleSheet, Text, View,Button,TextInput,Image,TouchableOpacity } from 'react-native';
-//import Icon from 'react-native-elements';
-import { TextChange } from 'typescript';
+import { StyleSheet, Text, View, Button, TextInput, Image, TouchableOpacity, AsyncStorage } from 'react-native';
+import md5 from 'react-native-md5';
+import BackgroundImage from '../components/backgroundImage';
+
+export interface Props {
+  name: string;
+}
+
+export interface State {
+  username: string,
+  password: string
+}
 
 export default class Login extends React.Component {
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: ''
+    };
+  }
+
+  componentDidMount() {
+    this.manageSession().done();
+  }
+
+  manageSession = async () => {  //managing session by logging out any user who isn't logged in
+    var val = await AsyncStorage.getItem('user');
+    if (val != null) {
+      this.props.navigation.navigate('Contacts');
+    }
+  }
+
+  checkLogin = () => { //check for validity of login credentials 
+    fetch('http://10.101.4.36:3000/users/login', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password.toUpperCase(),
+      })
+    })
+      .then((response) => response.json())
+      .then((res) => {
+        alert(res.message);
+        if (res.success === true) {
+          AsyncStorage.setItem('user', res.user);
+          this.props.navigation.navigate('Contacts'); //logging the user in
+
+        } else {
+          AsyncStorage.setItem('user', '');
+          alert(res.message)
+        }
+      })
+      .done();
+  }
+
   render() {
     return (
       <View style={styles.container}>
-       <BackgroundImage/>
-        <TextInput autoCorrect={false} underlineColorAndroid='transparent'   placeholder="User Name" style={styles.input}
-        onChangeText={(text) => this.setState({text})}/>
-        <TextInput autoCorrect={false} underlineColorAndroid='transparent' secureTextEntry={true}   placeholder="Password" style={styles.input}
-        onChangeText={(text) => this.setState({text})}/>
-        <TouchableOpacity style={styles.buttonContainer}><Text style={styles.buttonText}>Login</Text></TouchableOpacity>
-
+        <BackgroundImage />
+        <TextInput
+          autoCorrect={false}
+          underlineColorAndroid='transparent'
+          placeholder="User Name"
+          style={styles.input}
+          onChangeText={(text) => this.setState({ username: text })}
+        />
+        <TextInput
+          autoCorrect={false}
+          underlineColorAndroid='transparent'
+          secureTextEntry={true}
+          placeholder="Password"
+          style={styles.input}
+          onChangeText={(text) => this.setState({ password: md5.hex_md5(text) })}
+        />
+        <TouchableOpacity
+          onPress={this.checkLogin}
+          style={styles.buttonContainer}>
+          <Text style={styles.buttonText}>LOGIN</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
-class BackgroundImage extends React.Component {
 
-    render() {
-        return (
-            <Image source={require('./fire.jpg')}
-                  style={styles.backgroundImage}>
-
-                  {this.props.children}
-
-            </Image>
-        )
-    }
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -38,39 +96,36 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-
   },
-  input:{
-    color:'black',
-    fontWeight:'300',
-    fontSize:20,
-    margin:5,
+  input: {
+    color: 'black',
+    fontWeight: '300',
+    fontSize: 15,
+    marginBottom: 10,
     height: 40,
-    width:200,
+    width: 250,
     textAlign: 'center',
-    borderColor: 'black', 
-    borderWidth: 3,
-    backgroundColor:'white'
+    borderColor: 'black',
+    borderWidth: 0,
+    backgroundColor: 'rgba(255,255,255,0.1)'
   },
-   backgroundImage: {
-        flex: 1,
-        resizeMode: 'stretch',
-        position: 'absolute',
-        width:'100%',
-        height:'100%',
-        justifyContent: 'center',
-    },
-    buttonContainer:{
-      
-        backgroundColor:'#2980b9',
-        paddingVertical:'700',
-        
-
-    },
-    buttonText:{
-        textAlign:'center',
-        color:'#FFFFFF',
-        fontWeight:'700',
-    }
-    
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'stretch',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    backgroundColor: '#2980b9',
+    paddingHorizontal: 108,
+    paddingVertical: 10,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: '#FFFFFF',
+    fontWeight: '700',
+  }
 });
