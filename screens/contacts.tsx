@@ -51,9 +51,7 @@ export default class Contacts extends React.Component {
             });
         console.log(this.state.data);
     };
-    static logout=()=>{
-        this.props.navigation.goBack();
-    }
+  
     renderSeperator = () => {
         return (
             <View style={styles.separator}></View>
@@ -89,7 +87,7 @@ export default class Contacts extends React.Component {
                                 avatar={{ uri: item.thumbnail }}
                                 //badge={{ value: 3, textStyle: { color: 'orange' }, containerStyle: { marginTop: -20 } }}
                                 containerStyle={{ borderBottomWidth: 0 }}
-                                rightIcon={<Icon name="facebook" size={30} color="#900" />}
+                                rightIcon={<Icon name="chevron-right" size={20} color="black" />}
                                 onPress={() => this.chatWindow(item.email)}/>
                         </TouchableOpacity>
                     )}

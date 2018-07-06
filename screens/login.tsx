@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Image, TouchableOpacity, AsyncStorage } from 'react-native';
 import md5 from 'react-native-md5';
 import BackgroundImage from '../components/backgroundImage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export interface Props {
   name: string;
@@ -47,14 +48,14 @@ export default class Login extends React.Component {
     })
       .then((response) => response.json())
       .then((res) => {
-        alert(res.message);
+        //alert(res.message);
         if (res.success === true) {
           AsyncStorage.setItem('user', res.user);
           this.props.navigation.navigate('Contacts'); //logging the user in
 
         } else {
           AsyncStorage.setItem('user', '');
-          alert(res.message)
+          //alert(res.message)
         }
       })
       .done();
@@ -82,7 +83,9 @@ export default class Login extends React.Component {
         <TouchableOpacity
           onPress={this.checkLogin}
           style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>LOGIN</Text>
+          <Icon name="arrow-right"size={15}color='white'>
+          <Text style={styles.buttonText}>  LOGIN</Text></Icon>
+         
         </TouchableOpacity>
       </View>
     );
@@ -120,7 +123,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'center',
     backgroundColor: '#2980b9',
-    paddingHorizontal: 108,
+    paddingHorizontal: 95,
     paddingVertical: 10,
   },
   buttonText: {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { StackNavigator, } from 'react-navigation';
 import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import login from '../screens/login';
 import contacts from '../screens/contacts';
@@ -24,7 +25,7 @@ export const LoginScreen = StackNavigator({ //navigator to navigate through the 
         screen: contacts,
         navigationOptions: ({navigation}) => ({
             headerLeft: null,
-            headerRight:<Button onPress={()=>AsyncStorage.setItem('user','').then (navigation.goBack())}  title='LOG-OUT' ></Button>,
+            headerRight:<Button icon ={{name:'home' ,color:'black',size:20}} onPress={()=>AsyncStorage.setItem('user','').then (navigation.goBack())}  title='LOG-OUT' ></Button>,
             title: 'Contacts',
             headerTitleStyle: {
                 fontWeight: '500',

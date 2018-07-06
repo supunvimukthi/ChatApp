@@ -6,7 +6,7 @@ export default class BackgroundImage extends React.Component {
 
     render() {
         return (
-            <Image source={require('../fire.jpg')}
+            <Image source={require('./fire.jpg')}
                 style={styles.backgroundImage}>
                 {this.props.children}
             </Image>
