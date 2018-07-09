@@ -10,10 +10,6 @@ import { AsyncStorage } from 'react-native';
 
 
 
-var logout= (navigation) =>{
-    
-}
-
 export const LoginScreen = StackNavigator({ //navigator to navigate through the three screens
     Login: {
         screen: login,

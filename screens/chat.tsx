@@ -32,7 +32,8 @@ export default class Chat extends React.Component {
             message: '',
             sender: '',
             receiver: '',
-            user: ''
+            user: '',
+            time:''
         };
     }
 
@@ -66,8 +67,9 @@ export default class Chat extends React.Component {
             .then(res => res.json())
             .then(res => {
                 this.setState({
-                    message: {},
+                   // message: {},
                     data: [...res.data],
+                    
                 });
             })
             .done();
@@ -113,11 +115,14 @@ export default class Chat extends React.Component {
     }
 
     renderChat = ({ item }: any) => {  //render sent and received messages seperately 
+     
         if (this.state.sender === item.sender) {
+       
             return (
-                <View style={styles.textContainer}><Text style={styles.chat}>{item.message}  - {item.time}</Text></View>
+                <View style={styles.textContainer}><Text style={styles.chat1}>{item.message}  - {item.time}</Text></View>
             );
         } else {
+           
             return(
                 <View style={styles.textContainer1}><Text style={styles.chat}>{item.message}  - {item.time}</Text></View>
             );
@@ -127,8 +132,9 @@ export default class Chat extends React.Component {
         this.textInputRef.clear();
       }
 
-    render() {
-        return (
+    render(){ 
+        
+            return (
             <View style={styles.container}>
                 <BackgroundImage />
                 <FlatList
@@ -209,9 +215,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'black',
     },
+    chat1: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        fontWeight: 'bold',
+        color: 'black',
+    },
     textContainer: {
         alignSelf: 'flex-start',
         marginBottom: 10,
+    
     },
     textContainer1: {
         alignSelf: 'flex-end',
