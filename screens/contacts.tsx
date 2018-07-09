@@ -30,7 +30,7 @@ export default class Contacts extends React.Component {
     makeRemoteRequest = async () => {
         var user:string=await AsyncStorage.getItem('user')
 
-        const url = 'http://10.101.4.36:3000/users/list/'+user;
+        const url = 'https://evening-ridge-37409.herokuapp.com/users/list/'+user;
         //alert(url);
         this.setState({ 
             loading: true

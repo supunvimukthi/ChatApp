@@ -47,7 +47,7 @@ export default class Chat extends React.Component {
             receiver: await AsyncStorage.getItem('receiver'),
         });
 
-        const url = 'http://10.101.4.36:3000/messages/receive';
+        const url = 'https://evening-ridge-37409.herokuapp.com/messages/receive';
         this.setState({
             loading: true
         });
@@ -87,7 +87,7 @@ export default class Chat extends React.Component {
         var m: any = date.getMinutes();
         m = this.checkTime(m);    //retieving current date and time
 
-        fetch('http://10.101.4.36:3000/messages/send', {
+        fetch('https://evening-ridge-37409.herokuapp.com/messages/send', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

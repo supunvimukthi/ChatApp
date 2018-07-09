@@ -35,7 +35,7 @@ export default class Login extends React.Component {
   }
 
   checkLogin = () => { //check for validity of login credentials 
-    fetch('http://10.101.4.36:3000/users/login', {
+    fetch('https://evening-ridge-37409.herokuapp.com/users/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
