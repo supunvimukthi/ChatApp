@@ -10,7 +10,7 @@ import {
     FlatList,
     AsyncStorage
 } from 'react-native';
-import {apiUrl} from '../API config/config';
+import { apiUrl } from '../API config/config';
 import io from 'socket.io-client';
 
 export interface Props {
@@ -28,30 +28,32 @@ export default class Chat extends React.Component {
 
     constructor(props: Props) {
         super(props);
-        this.socket=io(apiUrl,{jsonp:false});
+        this.socket = io(apiUrl, { jsonp: false });
         this.state = {
             data: [],
             message: '',
             sender: '',
             receiver: '',
             user: '',
-            time:''
+            time: ''
         };
     }
 
-//load older messages onMount
-    async componentDidMount() { 
+    //load older messages onMount
+    async componentDidMount() {
         this.makeRemoteRequest();
-        
+
         this.setState({  //Setting up state variables to retrieve messages from API
             sender: await AsyncStorage.getItem('user'),
             receiver: await AsyncStorage.getItem('receiver'),
         });
-
-        this.socket.on(this.state.sender,data=>{
-            this.setState({data: [data,...this.state.data ]});
+        //setting up the socket listner for incoming messges to the user
+        this.socket.on(this.state.sender, data => {
+            this.setState({ data: [data, ...this.state.data] });
         })
     }
+
+    //make the API call to receive all messages
     makeRemoteRequest = async () => {
 
         this.setState({  //Setting up state variables to retrieve messages from API
@@ -59,13 +61,13 @@ export default class Chat extends React.Component {
             receiver: await AsyncStorage.getItem('receiver'),
         });
 
-       
-        const url = apiUrl+'messages/receive';
+
+        const url = apiUrl + 'messages/receive';
         this.setState({
             loading: true
         });
 
-        fetch(url, { //retrieve all old messages to data
+        fetch(url, { //retrieve all old messages to state-->data
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -80,14 +82,14 @@ export default class Chat extends React.Component {
             .then(res => {
                 this.setState({
                     data: [...res.data].reverse(),
-                    
+
                 });
             })
             .done();
     };
 
     //adding '0' to the front of minutes <10
-    checkTime = (i: any) => { 
+    checkTime = (i: any) => {
         if (i < 10) {
             i = "0" + i;
         }
@@ -95,63 +97,59 @@ export default class Chat extends React.Component {
     }
 
     //send messages by calling the send API with sender & receiver id
-    sendMessage = async () => {  
+    sendMessage = async () => {
 
         var date = new Date();
         var h = date.getHours();
         var m: any = date.getMinutes();
         m = this.checkTime(m);    //retieving current date and time
-        var item={
+        var item = {
             message: this.state.message,
             sender: await AsyncStorage.getItem('user'),
             receiver: await AsyncStorage.getItem('receiver'),
             time: h + ":" + m,
             date: date
         }
-        fetch(apiUrl+'messages/send', {
+        fetch(apiUrl + 'messages/send', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            
+
             body: JSON.stringify(item)
         })
             .then((response) => response.json())
             .then((res) => {
                 //alert(res.message);
-            
+
             })
             .done();
-            this.clear();
-            this.setState({data: [item,...this.state.data]});  
+        this.clear();
+        this.setState({ data: [item, ...this.state.data] });
     }
-   
- //render sent and received messages seperately 
-    renderChat = ({ item }: any) => { 
-        
+
+    //render sent and received messages seperately 
+    renderChat = ({ item }: any) => {
+
         if (this.state.sender === item.sender) {
-       
             return (
                 <View style={styles.textContainer}><Text style={styles.chat1}>{item.message}  - {item.time}</Text></View>
             );
         } else {
-           
-            return(
+            return (
                 <View style={styles.textContainer1}><Text style={styles.chat}>{item.message}  - {item.time}</Text></View>
             );
         }
-       
     }
 
     //clear text input
     clear = () => {
         this.textInputRef.clear();
-      }
+    }
 
-    render(){ 
-        
-            return (
+    render() {
+        return (
             <View style={styles.container}>
                 <BackgroundImage />
                 <FlatList
@@ -161,22 +159,20 @@ export default class Chat extends React.Component {
                     extraData={this.state.data}
                     renderItem={({ item }) => this.renderChat({ item })} //render chat messages according to time stamp
                     keyExtractor={item => item._id}
-                    
                 />
                 <View style={styles.chatContainer}>
-                    <TextInput 
+                    <TextInput
                         ref={ref => this.textInputRef = ref}
-                        autoCorrect={false} 
-                        underlineColorAndroid='transparent' 
-                        placeholder="Your Message" 
+                        autoCorrect={false}
+                        underlineColorAndroid='transparent'
+                        placeholder="Your Message"
                         style={styles.input}
-                        
                         onChangeText={(text) => this.setState({ message: text })} />
                     <TouchableOpacity
                         style={styles.buttonContainer}
                         onPress={this.sendMessage}
-                    >   
-                        <Text 
+                    >
+                        <Text
                             style={styles.buttonText}
                         >Send</Text>
                     </TouchableOpacity>
@@ -246,7 +242,6 @@ const styles = StyleSheet.create({
     textContainer: {
         alignSelf: 'flex-start',
         marginBottom: 10,
-    
     },
     textContainer1: {
         alignSelf: 'flex-end',

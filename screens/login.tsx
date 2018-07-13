@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, TextInput, Image, TouchableOpacity, Asy
 import md5 from 'react-native-md5';
 import BackgroundImage from '../components/backgroundImage';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {apiUrl} from '../API config/config';
+import { apiUrl } from '../API config/config';
 
 export interface Props {
   name: string;
@@ -28,17 +28,17 @@ export default class Login extends React.Component {
     this.manageSession().done();
   }
 
-//managing session by logging out any user who isn't logged in
-  manageSession = async () => {  
+  //managing session by logging out any user who isn't logged in
+  manageSession = async () => {
     var val = await AsyncStorage.getItem('user');
     if (val != null) {
       this.props.navigation.navigate('Contacts');
     }
   }
 
-   //check for validity of login credentials 
+  //check for validity of login credentials 
   checkLogin = () => {
-    fetch(apiUrl+'users/login', {
+    fetch(apiUrl + 'users/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -88,9 +88,9 @@ export default class Login extends React.Component {
         <TouchableOpacity
           onPress={this.checkLogin}
           style={styles.buttonContainer}>
-          <Icon name="arrow-right"size={15}color='white'>
-          <Text style={styles.buttonText}>  LOGIN</Text></Icon>
-         
+          <Icon name="arrow-right" size={15} color='white'>
+              <Text style={styles.buttonText}>  LOGIN</Text>
+          </Icon>
         </TouchableOpacity>
       </View>
     );

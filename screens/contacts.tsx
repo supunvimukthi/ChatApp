@@ -2,12 +2,12 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {apiUrl} from '../API config/config';
+import { apiUrl } from '../API config/config';
 import BackgroundImage from '../components/backgroundImage';
 
 
 export interface Props {
-    name: string;  
+    name: string;
 }
 
 export interface State {
@@ -21,23 +21,23 @@ export default class Contacts extends React.Component {
         this.state = {
             data: [],
             receiver: ''
-            
+
         };
     }
 
-//load the list of contacts on Mount
+    //load the list of contacts on Mount
     componentDidMount() {
-        this.makeRemoteRequest(); 
+        this.makeRemoteRequest();
     }
 
     makeRemoteRequest = async () => {
-        var user:string=await AsyncStorage.getItem('user')
+        var user: string = await AsyncStorage.getItem('user')
 
-        const url = apiUrl+'users/list/'+user;
+        const url = apiUrl + 'users/list/' + user;
         //alert(url);
-        this.setState({ 
+        this.setState({
             loading: true
-         });
+        });
 
         fetch(url)
             .then(res => res.json())
@@ -54,7 +54,7 @@ export default class Contacts extends React.Component {
             });
         console.log(this.state.data);
     };
-  
+
     renderSeperator = () => {
         return (
             <View style={styles.separator}></View>
@@ -62,16 +62,16 @@ export default class Contacts extends React.Component {
     }
 
 
-    chatWindow = (receiver: string,image:string) => {
+    renderChatWindow = (receiver: string, image: string) => {
         //alert(receiver);
         this.setState({ receiver: receiver })
         AsyncStorage.setItem('receiver', receiver)
-        var name=this.toTitleCase(receiver.split('.')[0])
-        this.props.navigation.navigate('Chats', {items:name,image:image}); //Naviate to chat screen after setting the receiver id
+        var name = this.toTitleCase(receiver.split('.')[0])
+        this.props.navigation.navigate('Chats', { items: name, image: image }); //Naviate to chat screen after setting the receiver id
     }
 
     //function to convert normal string to Title case
-    toTitleCase = function (str: any) {  
+    toTitleCase = function (str: any) {
         str = str.toLowerCase().split(' ');
         for (var i = 0; i < str.length; i++) {
             str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
@@ -81,7 +81,7 @@ export default class Contacts extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <BackgroundImage/>
+                <BackgroundImage source={require('../components/pic.jpg')} />
                 <FlatList
                     data={this.state.data}
                     renderItem={({ item }) => (
@@ -91,12 +91,12 @@ export default class Contacts extends React.Component {
                                 title={this.toTitleCase(item.first) + " " + this.toTitleCase(item.last)}
                                 titleStyle={{ fontWeight: 'normal', fontSize: 17, color: 'white' }}
                                 subtitle={item.email}
-                                subtitleStyle={{ fontWeight: 'normal' ,fontSize: 17, color: '#a79f9f' }}
+                                subtitleStyle={{ fontWeight: 'normal', fontSize: 17, color: '#a79f9f' }}
                                 avatar={{ uri: item.thumbnail }}
                                 //badge={{ value: 3, textStyle: { color: 'orange' }, containerStyle: { marginTop: -20 } }}
                                 containerStyle={{ borderBottomWidth: 0 }}
                                 rightIcon={<Icon name="chevron-right" size={20} color="white" />}
-                                onPress={() => this.chatWindow(item.email,item.thumbnail)}/>
+                                onPress={() => this.renderChatWindow(item.email, item.thumbnail)} />
                         </TouchableOpacity>
                     )}
                     keyExtractor={item => item.email}
@@ -105,7 +105,6 @@ export default class Contacts extends React.Component {
             </View>
         );
     }
-
 }
 
 

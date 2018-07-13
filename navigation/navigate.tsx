@@ -31,7 +31,7 @@ export const LoginScreen = StackNavigator({ //navigator to navigate through the 
                 color:'white'
             },
             headerStyle: {
-                backgroundColor: 'black',
+                backgroundColor:'black',
             }
         })
     },
