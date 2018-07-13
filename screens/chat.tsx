@@ -10,7 +10,8 @@ import {
     FlatList,
     AsyncStorage
 } from 'react-native';
-
+import {apiUrl} from '../API config/config';
+import io from 'socket.io-client';
 
 export interface Props {
     name: string;
@@ -27,6 +28,7 @@ export default class Chat extends React.Component {
 
     constructor(props: Props) {
         super(props);
+        this.socket=io(apiUrl,{jsonp:false});
         this.state = {
             data: [],
             message: '',
@@ -37,10 +39,19 @@ export default class Chat extends React.Component {
         };
     }
 
-    componentDidMount() {
-        this.makeRemoteRequest(); //load older messages onMount
+//load older messages onMount
+    async componentDidMount() { 
+        this.makeRemoteRequest();
+        
+        this.setState({  //Setting up state variables to retrieve messages from API
+            sender: await AsyncStorage.getItem('user'),
+            receiver: await AsyncStorage.getItem('receiver'),
+        });
+
+        this.socket.on(this.state.sender,data=>{
+            this.setState({data: [data,...this.state.data ]});
+        })
     }
-   
     makeRemoteRequest = async () => {
 
         this.setState({  //Setting up state variables to retrieve messages from API
@@ -48,12 +59,13 @@ export default class Chat extends React.Component {
             receiver: await AsyncStorage.getItem('receiver'),
         });
 
-        const url = 'https://evening-ridge-37409.herokuapp.com/messages/receive';
+       
+        const url = apiUrl+'messages/receive';
         this.setState({
             loading: true
         });
 
-        fetch(url, {
+        fetch(url, { //retrieve all old messages to data
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -67,41 +79,43 @@ export default class Chat extends React.Component {
             .then(res => res.json())
             .then(res => {
                 this.setState({
-                   // message: {},
-                    data: [...res.data],
+                    data: [...res.data].reverse(),
                     
                 });
             })
             .done();
     };
 
-    checkTime = (i: any) => { //adding '0' to the front of minutes <10
+    //adding '0' to the front of minutes <10
+    checkTime = (i: any) => { 
         if (i < 10) {
             i = "0" + i;
         }
         return i;
     }
 
-    sendMessage = async () => {  //send messages by calling the send API with sender & receiver id
+    //send messages by calling the send API with sender & receiver id
+    sendMessage = async () => {  
 
         var date = new Date();
         var h = date.getHours();
         var m: any = date.getMinutes();
         m = this.checkTime(m);    //retieving current date and time
-
-        fetch('https://evening-ridge-37409.herokuapp.com/messages/send', {
+        var item={
+            message: this.state.message,
+            sender: await AsyncStorage.getItem('user'),
+            receiver: await AsyncStorage.getItem('receiver'),
+            time: h + ":" + m,
+            date: date
+        }
+        fetch(apiUrl+'messages/send', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                message: this.state.message,
-                sender: await AsyncStorage.getItem('user'),
-                receiver: await AsyncStorage.getItem('receiver'),
-                time: h + ":" + m,
-                date: date
-            })
+            
+            body: JSON.stringify(item)
         })
             .then((response) => response.json())
             .then((res) => {
@@ -110,12 +124,12 @@ export default class Chat extends React.Component {
             })
             .done();
             this.clear();
-            this.makeRemoteRequest();
-            this.render();
+            this.setState({data: [item,...this.state.data]});  
     }
-
-    renderChat = ({ item }: any) => {  //render sent and received messages seperately 
-     
+   
+ //render sent and received messages seperately 
+    renderChat = ({ item }: any) => { 
+        
         if (this.state.sender === item.sender) {
        
             return (
@@ -127,7 +141,10 @@ export default class Chat extends React.Component {
                 <View style={styles.textContainer1}><Text style={styles.chat}>{item.message}  - {item.time}</Text></View>
             );
         }
+       
     }
+
+    //clear text input
     clear = () => {
         this.textInputRef.clear();
       }
@@ -138,9 +155,12 @@ export default class Chat extends React.Component {
             <View style={styles.container}>
                 <BackgroundImage />
                 <FlatList
+                    inverted
+                    ref='Flat_List'
                     data={this.state.data}
+                    extraData={this.state.data}
                     renderItem={({ item }) => this.renderChat({ item })} //render chat messages according to time stamp
-                    keyExtractor={item => item.sender}
+                    keyExtractor={item => item._id}
                     
                 />
                 <View style={styles.chatContainer}>
@@ -183,7 +203,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         borderColor: 'black',
         borderWidth: 0,
-        backgroundColor: 'rgba(255,255,255,0.1)',
+        backgroundColor: 'rgba(255,255,255,0.5)',
         borderRadius: 10
     },
     chatContainer: {
@@ -196,7 +216,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexBasis: '18%',
         alignItems: 'center',
-        backgroundColor: '#2980b9',
+        backgroundColor: 'black',
         paddingHorizontal: 10,
         height: 40,
         borderRadius: 10,
@@ -208,12 +228,12 @@ const styles = StyleSheet.create({
         fontWeight: '300',
     },
     chat: {
-        backgroundColor: '#c0fff4',
+        backgroundColor: 'black',
         borderRadius: 10,
         paddingHorizontal: 10,
         paddingVertical: 10,
         fontWeight: 'bold',
-        color: 'black',
+        color: 'white',
     },
     chat1: {
         backgroundColor: 'white',

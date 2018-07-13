@@ -1,12 +1,12 @@
 import React from 'react';
 import { StackNavigator, } from 'react-navigation';
-import { Button } from 'react-native-elements';
+import { Button ,Icon} from 'react-native-elements';
 
 
 import login from '../screens/login';
 import contacts from '../screens/contacts';
 import chat from '../screens/chat';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage,Image } from 'react-native';
 
 
 
@@ -27,28 +27,32 @@ export const LoginScreen = StackNavigator({ //navigator to navigate through the 
                 fontWeight: '500',
                 fontSize: 24,
                 marginTop: 5,
-                alignSelf: 'center'
+                alignSelf: 'center',
+                color:'white'
             },
             headerStyle: {
-                backgroundColor: '#0c6483',
+                backgroundColor: 'black',
             }
         })
     },
     Chats: {
         screen: chat,
-        navigationOptions: {
-            title: 'Chats',
+        navigationOptions:({navigation}) => ( {
+            title: navigation.state.params.items,
+            headerRight:<Image style={{width:40,height:40,marginRight:30,borderRadius:10}} source={{uri:navigation.state.params.image}}/>,
             headerTitleStyle: {
                 fontWeight: '500',
                 fontSize: 24,
                 marginTop: 5,
                 textAlign: 'center',
-                alignSelf: 'center'
+                alignSelf: 'center',
+                color:'white'
             },
             headerStyle: {
-                backgroundColor: '#0c6483',
+                backgroundColor: 'black',
+                opacity:10
             }
-        },
+        }),
     },
 });
 

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Button, TextInput, Image, TouchableOpacity, Asy
 import md5 from 'react-native-md5';
 import BackgroundImage from '../components/backgroundImage';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {apiUrl} from '../API config/config';
 
 export interface Props {
   name: string;
@@ -27,15 +28,17 @@ export default class Login extends React.Component {
     this.manageSession().done();
   }
 
-  manageSession = async () => {  //managing session by logging out any user who isn't logged in
+//managing session by logging out any user who isn't logged in
+  manageSession = async () => {  
     var val = await AsyncStorage.getItem('user');
     if (val != null) {
       this.props.navigation.navigate('Contacts');
     }
   }
 
-  checkLogin = () => { //check for validity of login credentials 
-    fetch('https://evening-ridge-37409.herokuapp.com/users/login', {
+   //check for validity of login credentials 
+  checkLogin = () => {
+    fetch(apiUrl+'users/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -55,7 +58,7 @@ export default class Login extends React.Component {
 
         } else {
           AsyncStorage.setItem('user', '');
-          //alert(res.message)
+          alert(res.message)
         }
       })
       .done();
@@ -69,6 +72,7 @@ export default class Login extends React.Component {
           autoCorrect={false}
           underlineColorAndroid='transparent'
           placeholder="User Name"
+          placeholderTextColor='#b8a9a9'
           style={styles.input}
           onChangeText={(text) => this.setState({ username: text })}
         />
@@ -77,6 +81,7 @@ export default class Login extends React.Component {
           underlineColorAndroid='transparent'
           secureTextEntry={true}
           placeholder="Password"
+          placeholderTextColor='#b8a9a9'
           style={styles.input}
           onChangeText={(text) => this.setState({ password: md5.hex_md5(text) })}
         />
@@ -101,7 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    color: 'black',
+    color: 'white',
     fontWeight: '300',
     fontSize: 15,
     marginBottom: 10,

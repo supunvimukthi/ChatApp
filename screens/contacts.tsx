@@ -2,6 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {apiUrl} from '../API config/config';
+import BackgroundImage from '../components/backgroundImage';
 
 
 export interface Props {
@@ -23,14 +25,15 @@ export default class Contacts extends React.Component {
         };
     }
 
+//load the list of contacts on Mount
     componentDidMount() {
-        this.makeRemoteRequest(); //load the list of contacts on Mount
+        this.makeRemoteRequest(); 
     }
 
     makeRemoteRequest = async () => {
         var user:string=await AsyncStorage.getItem('user')
 
-        const url = 'https://evening-ridge-37409.herokuapp.com/users/list/'+user;
+        const url = apiUrl+'users/list/'+user;
         //alert(url);
         this.setState({ 
             loading: true
@@ -58,13 +61,17 @@ export default class Contacts extends React.Component {
         )
     }
 
-    chatWindow = (receiver: string) => {
+
+    chatWindow = (receiver: string,image:string) => {
         //alert(receiver);
         this.setState({ receiver: receiver })
         AsyncStorage.setItem('receiver', receiver)
-        this.props.navigation.navigate('Chats', null); //Naviate to chat screen after setting the receiver id
+        var name=this.toTitleCase(receiver.split('.')[0])
+        this.props.navigation.navigate('Chats', {items:name,image:image}); //Naviate to chat screen after setting the receiver id
     }
-    toTitleCase = function (str: any) {  //function to convert normal string to Title case
+
+    //function to convert normal string to Title case
+    toTitleCase = function (str: any) {  
         str = str.toLowerCase().split(' ');
         for (var i = 0; i < str.length; i++) {
             str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
@@ -74,21 +81,22 @@ export default class Contacts extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                <BackgroundImage/>
                 <FlatList
                     data={this.state.data}
                     renderItem={({ item }) => (
-                        <TouchableOpacity>
+                        <TouchableOpacity >
                             <ListItem
                                 roundAvatar
                                 title={this.toTitleCase(item.first) + " " + this.toTitleCase(item.last)}
-                                titleStyle={{ fontWeight: 'bold', fontSize: 17, color: '#210333' }}
+                                titleStyle={{ fontWeight: 'normal', fontSize: 17, color: 'white' }}
                                 subtitle={item.email}
-                                subtitleStyle={{ fontSize: 17, color: '#474242' }}
+                                subtitleStyle={{ fontWeight: 'normal' ,fontSize: 17, color: '#a79f9f' }}
                                 avatar={{ uri: item.thumbnail }}
                                 //badge={{ value: 3, textStyle: { color: 'orange' }, containerStyle: { marginTop: -20 } }}
                                 containerStyle={{ borderBottomWidth: 0 }}
-                                rightIcon={<Icon name="chevron-right" size={20} color="black" />}
-                                onPress={() => this.chatWindow(item.email)}/>
+                                rightIcon={<Icon name="chevron-right" size={20} color="white" />}
+                                onPress={() => this.chatWindow(item.email,item.thumbnail)}/>
                         </TouchableOpacity>
                     )}
                     keyExtractor={item => item.email}
@@ -107,9 +115,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     separator: {
-        height: 1,
+        height: 3,
         width: '86%',
-        backgroundColor: '#210333',
+        backgroundColor: 'black',
         marginLeft: '14%'
     }
 });
