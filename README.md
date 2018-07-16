@@ -4,7 +4,7 @@ A simple realtime chat app using react native framework and typescript to be run
 'API config file' contains the required CHAT API for the app which is deployed on heroku using node js. You can find the git repo of this server [here](https://github.com/supunvimukthi/Chat-Server)
 
 # How to run 
-- clone the folder 
+- Clone this git repo 
 - cd in to the 'ChatApp' folder 
 - run 'npm install' to install the dependencies 
 - 'react-native start' to run the packager 
