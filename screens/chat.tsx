@@ -239,11 +239,11 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     textContainer: {
-        alignSelf: 'flex-start',
+        alignSelf: 'flex-end',
         marginBottom: 10,
     },
     textContainer1: {
-        alignSelf: 'flex-end',
+        alignSelf: 'flex-start',
         marginBottom: 10,
     }
 });
