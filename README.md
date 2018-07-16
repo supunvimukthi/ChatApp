@@ -1,4 +1,4 @@
-# Mobile Chat-App
+# Chat-App
 A simple realtime chat app using react native framework and typescript to be run on ios/android.
 
 'API config file' contains the required CHAT API for the app which is deployed on heroku using node js. You can find the git repo of this server [here](https://github.com/supunvimukthi/Chat-Server)
