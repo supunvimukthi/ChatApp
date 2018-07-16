@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
+import { StyleSheet, View, FlatList, TouchableOpacity, AsyncStorage } from 'react-native';
+import { ListItem } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { apiUrl } from '../API config/config';
 import BackgroundImage from '../components/backgroundImage';
@@ -21,7 +21,6 @@ export default class Contacts extends React.Component {
         this.state = {
             data: [],
             receiver: ''
-
         };
     }
 

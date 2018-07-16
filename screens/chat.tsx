@@ -5,7 +5,6 @@ import {
     Text,
     View,
     TextInput,
-    Image,
     TouchableOpacity,
     FlatList,
     AsyncStorage

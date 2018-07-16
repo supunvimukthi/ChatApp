@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Image, TouchableOpacity, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
 import md5 from 'react-native-md5';
 import BackgroundImage from '../components/backgroundImage';
 import Icon from 'react-native-vector-icons/FontAwesome';
